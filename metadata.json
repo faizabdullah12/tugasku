@@ -1,0 +1,6 @@
+{
+  "name": "TugasMandiri - Portal Akademik",
+  "description": "Portal penugasan akademik mahasiswa untuk pemantauan tugas, pengunggahan berkas terenkripsi, evaluasi nilai & rubrik dosen, serta pelacakan riwayat pengiriman.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
