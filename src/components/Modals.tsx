@@ -1,42 +1,38 @@
 import React, { useState } from 'react';
-import { ActiveTab, TaskItem } from '../types';
-import { MOCK_TASKS, LECTURER_DATA } from '../data/mockData';
-import { 
-  X, 
-  Search, 
-  Upload, 
-  Send, 
-  CheckCircle2, 
-  HelpCircle, 
-  Settings, 
-  Scale, 
+import { SubmissionItem } from '../types';
+import {
+  X,
+  Search,
+  Send,
+  CheckCircle2,
+  HelpCircle,
+  Settings,
   MessageSquare,
-  FileArchive,
-  AlertCircle
+  Clock
 } from 'lucide-react';
 
 // SEARCH MODAL
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectTask: (task: TaskItem) => void;
+  onSelectSubmission: (submission: SubmissionItem) => void;
+  submissions: SubmissionItem[];
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
   isOpen,
   onClose,
-  onSelectTask,
+  onSelectSubmission,
+  submissions,
 }) => {
   const [query, setQuery] = useState('');
 
   if (!isOpen) return null;
 
-  const filteredTasks = MOCK_TASKS.filter(
-    (t) =>
-      t.title.toLowerCase().includes(query.toLowerCase()) ||
-      t.courseName.toLowerCase().includes(query.toLowerCase()) ||
-      t.courseCode.toLowerCase().includes(query.toLowerCase()) ||
-      t.lecturer.toLowerCase().includes(query.toLowerCase())
+  const filtered = submissions.filter(
+    (s) =>
+      s.title.toLowerCase().includes(query.toLowerCase()) ||
+      s.courseName.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
@@ -49,7 +45,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Cari tugas, kode mata kuliah, dosen..."
+            placeholder="Cari judul tugas..."
             className="flex-1 text-sm text-[#0b1c30] placeholder:text-[#777587] focus:outline-none"
           />
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100 text-[#777587]">
@@ -58,30 +54,34 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         </div>
 
         <div className="max-h-80 overflow-y-auto p-2">
-          {filteredTasks.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="p-8 text-center text-xs text-[#777587]">
               Tidak ada tugas yang cocok dengan pencarian &quot;{query}&quot;
             </div>
           ) : (
-            filteredTasks.map((task) => (
+            filtered.map((submission) => (
               <div
-                key={task.id}
+                key={submission.id}
                 onClick={() => {
-                  onSelectTask(task);
+                  onSelectSubmission(submission);
                   onClose();
                 }}
                 className="p-3 rounded-xl hover:bg-[#eff4ff] cursor-pointer transition-colors flex items-center justify-between"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-[#0b1c30]">{task.title}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-100 text-[#3525cd] font-semibold">
-                      {task.courseCode}
-                    </span>
+                    <span className="font-bold text-xs text-[#0b1c30]">{submission.title}</span>
+                    {submission.status === 'dinilai' ? (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-semibold">
+                        {submission.score}/{submission.maxScore}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-amber-100 text-amber-700 font-semibold">
+                        Menunggu
+                      </span>
+                    )}
                   </div>
-                  <span className="text-[11px] text-[#464555] block mt-0.5">
-                    {task.courseName} • Dosen: {task.lecturer}
-                  </span>
+                  <span className="text-[11px] text-[#464555] block mt-0.5">{submission.courseName}</span>
                 </div>
                 <span className="text-xs font-bold text-[#3525cd]">Buka →</span>
               </div>
@@ -93,188 +93,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   );
 };
 
-// REVISION MODAL
-interface RevisionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmitRevision: () => void;
-}
-
-export const RevisionModal: React.FC<RevisionModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmitRevision,
-}) => {
-  const [revisionNotes, setRevisionNotes] = useState('');
-  const [hasFile, setHasFile] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmitRevision();
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl border border-indigo-100 max-w-lg w-full p-6 flex flex-col gap-4 animate-in fade-in zoom-in-95">
-        <div className="flex items-center justify-between pb-3 border-b border-indigo-50">
-          <div className="flex items-center gap-2">
-            <Upload className="w-5 h-5 text-[#3525cd]" />
-            <h3 className="text-base font-extrabold text-[#0b1c30]">Ajukan Revisi Berkas</h3>
-          </div>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100 text-[#777587]">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs">
-          <div className="p-3 bg-[#eff4ff] rounded-xl text-[#464555] leading-relaxed">
-            Pengajuan revisi sebelum <strong className="text-[#0b1c30]">25 Okt 2024 23:59 WIB</strong> akan otomatis menggantikan berkas Versi 1 tanpa penalti nilai. Kesempatan revisi tersisa: <strong className="text-[#3525cd]">2 kali</strong>.
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <span className="font-bold text-[#0b1c30]">Unggah Berkas Pengganti (.ZIP / .PDF)</span>
-            <label className="border-2 border-dashed border-indigo-200 rounded-xl p-4 text-center cursor-pointer hover:bg-[#eff4ff] transition-colors flex flex-col items-center">
-              <FileArchive className="w-8 h-8 text-[#3525cd] mb-1" />
-              <span className="font-bold text-[#0b1c30]">
-                {hasFile ? '210401089_NadiaSavitri_Tugas4_v2.zip' : 'Klik untuk memilih berkas revisi baru'}
-              </span>
-              <span className="text-[10px] text-[#777587] mt-0.5">Maksimal 50 MB</span>
-              <input
-                type="file"
-                className="hidden"
-                onChange={() => setHasFile(true)}
-              />
-            </label>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="font-bold text-[#0b1c30]">Alasan &amp; Ringkasan Perbaikan</label>
-            <textarea
-              required
-              rows={3}
-              value={revisionNotes}
-              onChange={(e) => setRevisionNotes(e.target.value)}
-              placeholder="Contoh: 'Memperbaiki bug otentikasi role pada endpoint /admin dan menambahkan 2 test case baru.'"
-              className="p-2.5 bg-[#eff4ff] rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-[#3525cd]/20 resize-none"
-            />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-2 border-t border-indigo-50">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-xl hover:bg-[#eff4ff] text-[#464555] font-semibold"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-xl bg-[#3525cd] hover:bg-[#4f46e5] text-white font-bold shadow-xs active:scale-95"
-            >
-              Kirimkan Revisi
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-// DISPUTE MODAL (SANGGAHAN NILAI)
-interface DisputeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export const DisputeModal: React.FC<DisputeModalProps> = ({ isOpen, onClose }) => {
-  const [reason, setReason] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      onClose();
-    }, 1800);
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl border border-indigo-100 max-w-lg w-full p-6 flex flex-col gap-4 animate-in fade-in zoom-in-95">
-        <div className="flex items-center justify-between pb-3 border-b border-indigo-50">
-          <div className="flex items-center gap-2">
-            <Scale className="w-5 h-5 text-[#3525cd]" />
-            <h3 className="text-base font-extrabold text-[#0b1c30]">Ajukan Sanggahan Nilai</h3>
-          </div>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100 text-[#777587]">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {submitted ? (
-          <div className="p-8 text-center flex flex-col items-center gap-2 text-xs">
-            <CheckCircle2 className="w-10 h-10 text-[#006c49]" />
-            <span className="font-bold text-sm text-[#0b1c30]">Sanggahan Berhasil Terkirim!</span>
-            <span className="text-[#464555]">
-              Permohonan Anda diteruskan kepada Dosen Dr. Ir. Hendra Wijaya, M.T. Estimasi verifikasi 1-2 hari kerja.
-            </span>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs">
-            <div className="p-3 bg-[#eff4ff] rounded-xl text-[#464555] leading-relaxed">
-              Tugas: <strong className="text-[#0b1c30]">Tugas 3: Database Relasional &amp; Migrasi</strong> • Nilai Sekarang: <strong className="text-[#3525cd]">95 / 100 (Grade A)</strong>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="font-bold text-[#0b1c30]">Kriteria Rubrik yang Disanggah</label>
-              <select className="p-2.5 bg-[#eff4ff] rounded-xl border border-indigo-100 focus:outline-none">
-                <option>03. Query Kompleks &amp; Relasi (28/30)</option>
-                <option>04. Dokumentasi ERD &amp; Laporan (22/25)</option>
-                <option>Lainnya</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="font-bold text-[#0b1c30]">Argumen Teknis &amp; Bukti Pengerjaan</label>
-              <textarea
-                required
-                rows={4}
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder="Jelaskan alasan teknis permohonan peninjauan nilai beserta baris kode atau referensi dokumen..."
-                className="p-2.5 bg-[#eff4ff] rounded-xl border border-indigo-100 focus:outline-none resize-none leading-relaxed"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2 border-t border-indigo-50">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 rounded-xl hover:bg-[#eff4ff] text-[#464555] font-semibold"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                className="px-5 py-2 rounded-xl bg-[#3525cd] hover:bg-[#4f46e5] text-white font-bold shadow-xs active:scale-95"
-              >
-                Kirimkan Permohonan
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// MESSAGE LECTURER MODAL
+// MESSAGE MODAL (kirim pesan ke dosen)
 interface MessageModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -286,13 +105,15 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose }) =
 
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    setSent(false);
+    setMessage('');
+    onClose();
+  };
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     setSent(true);
-    setTimeout(() => {
-      setSent(false);
-      onClose();
-    }, 1500);
   };
 
   return (
@@ -303,7 +124,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose }) =
             <MessageSquare className="w-5 h-5 text-[#3525cd]" />
             <h3 className="text-base font-extrabold text-[#0b1c30]">Kirim Pesan ke Dosen</h3>
           </div>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100 text-[#777587]">
+          <button onClick={handleClose} className="p-1 rounded-lg hover:bg-slate-100 text-[#777587]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -311,23 +132,11 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose }) =
         {sent ? (
           <div className="p-6 text-center flex flex-col items-center gap-2 text-xs">
             <CheckCircle2 className="w-8 h-8 text-[#006c49]" />
-            <span className="font-bold text-[#0b1c30]">Pesan Terkirim Langsung!</span>
-            <span className="text-[#464555]">Notifikasi telah diteruskan ke portal dosen.</span>
+            <span className="font-bold text-[#0b1c30]">Pesan Tersimpan!</span>
+            <span className="text-[#464555]">Catatanmu akan terlihat bersama tugas terkait.</span>
           </div>
         ) : (
           <form onSubmit={handleSend} className="flex flex-col gap-4 text-xs">
-            <div className="flex items-center gap-3 p-3 bg-[#eff4ff] rounded-xl">
-              <img
-                src={LECTURER_DATA.avatarUrl}
-                alt="Dosen"
-                className="w-10 h-10 rounded-full object-cover ring-1 ring-indigo-200"
-              />
-              <div className="flex flex-col">
-                <span className="font-bold text-[#0b1c30]">{LECTURER_DATA.name}</span>
-                <span className="text-[11px] text-[#464555]">{LECTURER_DATA.role}</span>
-              </div>
-            </div>
-
             <div className="flex flex-col gap-1.5">
               <label className="font-bold text-[#0b1c30]">Isi Pesan / Pertanyaan</label>
               <textarea
@@ -335,7 +144,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose }) =
                 rows={4}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Selamat pagi Pak Hendra, izin bertanya mengenai saran indexing pada kriteria query Tugas 3..."
+                placeholder="Tulis pertanyaan seputar nilai atau feedback tugas ini..."
                 className="p-2.5 bg-[#eff4ff] rounded-xl border border-indigo-100 focus:outline-none resize-none leading-relaxed"
               />
             </div>
@@ -343,7 +152,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose }) =
             <div className="flex justify-end gap-2 pt-2 border-t border-indigo-50">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="px-4 py-2 rounded-xl hover:bg-[#eff4ff] text-[#464555] font-semibold"
               >
                 Batal
@@ -387,23 +196,25 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
 
         <div className="space-y-3 text-xs text-[#0b1c30] max-h-80 overflow-y-auto pr-1">
           <div className="p-3 bg-[#eff4ff] rounded-xl">
-            <span className="font-bold block mb-1">Bagaimana cara mengunggah berkas revisi?</span>
+            <span className="font-bold block mb-1">Bagaimana cara mengunggah tugas?</span>
             <p className="text-[#464555] leading-relaxed">
-              Anda dapat membuka menu <strong>Riwayat Pengiriman</strong> dan menekan tombol <strong>Ajukan Revisi Berkas</strong>. Revisi sebelum tenggat waktu tidak dikenakan pengurangan nilai.
+              Buka menu <strong>Unggah Tugas</strong>, isi judul dan deskripsi tugas yang kamu kerjakan, lalu unggah berkasnya. Tidak perlu menunggu tugas dibuat oleh dosen terlebih dahulu.
             </p>
           </div>
 
           <div className="p-3 bg-[#eff4ff] rounded-xl">
-            <span className="font-bold block mb-1">Berapa batas ukuran maksimal file?</span>
+            <span className="font-bold block mb-1 flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#885500]" /> Apakah bisa revisi setelah dinilai?
+            </span>
             <p className="text-[#464555] leading-relaxed">
-              Batas ukuran maksimal per pengiriman tugas adalah <strong>50 MB</strong> dalam format ZIP, RAR, atau PDF.
+              Tidak. Setiap tugas hanya bisa dikirim satu kali dan tidak dapat direvisi setelah dosen memberi nilai. Pastikan berkas sudah final sebelum dikirim.
             </p>
           </div>
 
           <div className="p-3 bg-[#eff4ff] rounded-xl">
-            <span className="font-bold block mb-1">Apa fungsi Checksum SHA-256 pada bukti terima?</span>
+            <span className="font-bold block mb-1">Bagaimana cara melihat nilai?</span>
             <p className="text-[#464555] leading-relaxed">
-              Checksum SHA-256 merupakan sidik jari kriptografi unik untuk membuktikan keaslian berkas tugas yang Anda kumpulkan agar terbebas dari sengketa waktu atau integritas file.
+              Buka menu <strong>Nilai &amp; Feedback</strong> untuk melihat skor dan catatan dosen pada tugas yang sudah dinilai.
             </p>
           </div>
         </div>
@@ -428,7 +239,6 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
-  const [notifyDeadline, setNotifyDeadline] = useState(true);
   const [notifyGrade, setNotifyGrade] = useState(true);
 
   if (!isOpen) return null;
@@ -449,26 +259,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         <div className="space-y-4 text-xs">
           <div>
             <span className="font-bold text-[#0b1c30] block mb-2">Preferensi Notifikasi</span>
-            <div className="space-y-2">
-              <label className="flex items-center justify-between p-3 bg-[#eff4ff] rounded-xl cursor-pointer">
-                <span className="font-semibold text-[#0b1c30]">Pengingat Tenggat Waktu (24 Jam &amp; 3 Jam)</span>
-                <input
-                  type="checkbox"
-                  checked={notifyDeadline}
-                  onChange={(e) => setNotifyDeadline(e.target.checked)}
-                  className="w-4 h-4 text-[#3525cd] rounded"
-                />
-              </label>
-              <label className="flex items-center justify-between p-3 bg-[#eff4ff] rounded-xl cursor-pointer">
-                <span className="font-semibold text-[#0b1c30]">Notifikasi Nilai &amp; Feedback Rilis</span>
-                <input
-                  type="checkbox"
-                  checked={notifyGrade}
-                  onChange={(e) => setNotifyGrade(e.target.checked)}
-                  className="w-4 h-4 text-[#3525cd] rounded"
-                />
-              </label>
-            </div>
+            <label className="flex items-center justify-between p-3 bg-[#eff4ff] rounded-xl cursor-pointer">
+              <span className="font-semibold text-[#0b1c30]">Notifikasi Nilai &amp; Feedback Rilis</span>
+              <input
+                type="checkbox"
+                checked={notifyGrade}
+                onChange={(e) => setNotifyGrade(e.target.checked)}
+                className="w-4 h-4 text-[#3525cd] rounded"
+              />
+            </label>
           </div>
 
           <div>

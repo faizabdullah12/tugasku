@@ -1,59 +1,48 @@
-export type ActiveTab = 'dashboard' | 'unggah-tugas' | 'riwayat-pengiriman' | 'nilai-feedback';
+export type UserRole = 'mahasiswa' | 'dosen';
 
-export interface TaskItem {
+export type ActiveTab =
+  | 'dashboard'
+  | 'unggah-tugas'
+  | 'riwayat-pengiriman'
+  | 'nilai-feedback'
+  | 'dosen-dashboard';
+
+export interface Profile {
   id: string;
-  courseCode: string;
-  courseName: string;
-  courseColor: 'primary' | 'secondary' | 'tertiary' | 'purple';
-  title: string;
-  description: string;
-  lecturer: string;
-  deadlineText: string;
-  deadlineDate: string;
-  deadlineTime: string;
-  isUrgent?: boolean;
-  urgentText?: string;
-  daysRemaining?: number;
-  weight: number;
-  fileFormat: string;
-  maxSize: string;
-  status: 'belum-dikumpul' | 'draf' | 'menunggu-nilai' | 'dinilai';
-  statusLabel: string;
-  score?: number;
-  maxScore?: number;
-  grade?: string;
-  submittedAt?: string;
+  name: string;
+  nim: string | null;
+  major: string | null;
+  semester: string | null;
+  academic_week: number;
+  avatar_url: string | null;
+  logo_url: string | null;
+  role: UserRole;
 }
 
-export interface SubmissionReceipt {
+export const DEFAULT_COURSE_NAME = 'Pengembangan Aplikasi dan Web';
+
+export type SubmissionStatus = 'menunggu-nilai' | 'dinilai';
+
+export interface SubmissionItem {
   id: string;
-  submissionId: string;
-  taskTitle: string;
   courseName: string;
-  courseCode: string;
-  uploadedAt: string;
-  punctualityStatus: string;
-  punctualityNote: string;
+  title: string;
+  description: string;
+  deadlineAt: string | null;
+  submissionCode: string;
   fileName: string;
+  filePath: string;
   fileSize: string;
   fileType: string;
-  sha256Hash: string;
-  githubUrl: string;
-  notes: string;
-  version: string;
-  revisionAttemptsLeft: number;
-  lecturerName: string;
-  weight: string;
-}
-
-export interface RubricItem {
-  id: string;
-  number: string;
-  title: string;
-  score: number;
+  sha256Hash: string | null;
+  githubUrl: string | null;
+  notes: string | null;
+  status: SubmissionStatus;
+  score: number | null;
   maxScore: number;
-  badgeText: string;
-  badgeType: 'emerald' | 'amber' | 'indigo';
-  description: string;
-  percentage: number;
+  grade: string | null;
+  lecturerFeedback: string | null;
+  reviewedByName: string | null;
+  reviewedAt: string | null;
+  submittedAt: string;
 }

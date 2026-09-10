@@ -1,39 +1,88 @@
 import React, { useState, useEffect } from 'react';
-import { ActiveTab, TaskItem } from './types';
+import { ActiveTab, SubmissionItem } from './types';
+import type { DashboardData, DosenDashboardData } from './lib/data';
+import { loadDashboardData, loadDosenDashboardData } from './lib/data';
+import { supabase } from './lib/supabase';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
 import { UploadView } from './components/UploadView';
 import { ReceiptView } from './components/ReceiptView';
 import { EvaluationView } from './components/EvaluationView';
-import { 
-  SearchModal, 
-  RevisionModal, 
-  DisputeModal, 
-  MessageModal, 
-  HelpModal, 
-  SettingsModal 
+import { LoginView } from './components/LoginView';
+import { DosenDashboardView } from './components/DosenDashboardView';
+import {
+  SearchModal,
+  MessageModal,
+  HelpModal,
+  SettingsModal
 } from './components/Modals';
-import { 
-  LayoutDashboard, 
-  UploadCloud, 
-  History, 
+import {
+  LayoutDashboard,
+  UploadCloud,
+  History,
   Award,
   CheckCircle2
 } from 'lucide-react';
 
 export function App() {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [dosenData, setDosenData] = useState<DosenDashboardData | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
-  const [selectedCourseFilter, setSelectedCourseFilter] = useState<string>('all');
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<string | undefined>();
   const [isOpenMobile, setIsOpenMobile] = useState<boolean>(false);
 
   // Modals
   const [searchOpen, setSearchOpen] = useState(false);
-  const [revisionOpen, setRevisionOpen] = useState(false);
-  const [disputeOpen, setDisputeOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const loadData = async () => {
+    setIsLoading(true);
+    setDataError(null);
+    try {
+      if (!supabase) throw new Error('Supabase belum dikonfigurasi. Buat file .env.local dari .env.example.');
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoggedIn(false);
+        setData(null);
+        setDosenData(null);
+        return;
+      }
+      setIsLoggedIn(true);
+
+      const { data: profileRow, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profileRow) throw new Error('Profil tidak ditemukan.');
+
+      if (profileRow.role === 'dosen') {
+        setDosenData(await loadDosenDashboardData(user.id));
+        setData(null);
+        setActiveTab('dosen-dashboard');
+      } else {
+        setData(await loadDashboardData(user.id));
+        setDosenData(null);
+        setActiveTab('dashboard');
+      }
+    } catch (error) {
+      setDataError(error instanceof Error ? error.message : 'Data tidak dapat dimuat.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadData();
+  }, []);
 
   // Toast Notification
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -57,25 +106,70 @@ export function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleSelectTaskFromSearch = (task: TaskItem) => {
-    if (task.status === 'dinilai') {
+  const handleSelectSubmissionFromSearch = (submission: SubmissionItem) => {
+    setSelectedSubmissionId(submission.id);
+    if (submission.status === 'dinilai') {
       setActiveTab('nilai-feedback');
-    } else if (task.status === 'menunggu-nilai') {
-      setActiveTab('riwayat-pengiriman');
     } else {
-      setActiveTab('unggah-tugas');
+      setActiveTab('riwayat-pengiriman');
     }
   };
 
   const handleUploadSuccess = () => {
-    showToast('Tugas berhasil dikirim dan diverifikasi dengan Checksum SHA-256!');
+    showToast('Tugas berhasil dikirim!');
+    setSelectedSubmissionId(undefined);
+    void loadData();
     setActiveTab('riwayat-pengiriman');
   };
 
-  const handleRevisionSuccess = () => {
-    showToast('Berkas revisi Versi 2 berhasil diunggah!');
+  const handleLogout = async () => {
+    await supabase?.auth.signOut();
+    setIsLoggedIn(false);
+    setData(null);
+    setDosenData(null);
   };
 
+  // ---------- LOADING ----------
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-sm text-[#464555]">
+        Memuat data dari Supabase...
+      </div>
+    );
+  }
+
+  // ---------- BELUM LOGIN ----------
+  if (!isLoggedIn) {
+    return <LoginView onLoginSuccess={() => void loadData()} />;
+  }
+
+  // ---------- ERROR (setelah login tapi data gagal dimuat) ----------
+  if (dataError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full rounded-2xl border border-rose-200 bg-rose-50 p-8 text-sm text-rose-700">
+          {dataError}
+        </div>
+      </div>
+    );
+  }
+
+  // ---------- DASHBOARD DOSEN ----------
+  if (dosenData) {
+    return <DosenDashboardView dosenData={dosenData} onLogout={handleLogout} onRefresh={() => void loadData()} />;
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const selectedSubmission = data.submissions.find((s) => s.id === selectedSubmissionId) ?? null;
+  const latestReceipt = selectedSubmission ?? data.submissions[0] ?? null;
+  const gradedSubmissions = data.submissions.filter((s) => s.status === 'dinilai');
+  const selectedEvaluation =
+    (selectedSubmission?.status === 'dinilai' ? selectedSubmission : null) ?? gradedSubmissions[0] ?? null;
+
+  // ---------- DASHBOARD MAHASISWA ----------
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex flex-col selection:bg-indigo-100 selection:text-indigo-900">
       {/* Toast Notification Banner */}
@@ -90,12 +184,11 @@ export function App() {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        selectedCourseFilter={selectedCourseFilter}
-        setSelectedCourseFilter={setSelectedCourseFilter}
         isOpenMobile={isOpenMobile}
         setIsOpenMobile={setIsOpenMobile}
         onOpenHelp={() => setHelpOpen(true)}
         onOpenSettings={() => setSettingsOpen(true)}
+        profile={data.profile}
       />
 
       {/* Top Header */}
@@ -104,28 +197,31 @@ export function App() {
         onOpenMobileMenu={() => setIsOpenMobile(true)}
         onNavigateToUpload={() => setActiveTab('unggah-tugas')}
         onNavigateToFeedback={() => setActiveTab('nilai-feedback')}
+        onLogout={handleLogout}
+        profile={data.profile}
       />
 
       {/* Main Content Workspace */}
       <main className="flex-1 lg:ml-64 pt-20 pb-20 lg:pb-12 px-4 sm:px-6 md:px-8 transition-all">
         {activeTab === 'dashboard' && (
           <DashboardView
-            onNavigateToUpload={(taskId) => {
-              setActiveTab('unggah-tugas');
-            }}
-            onNavigateToEvaluation={(taskId) => {
+            onNavigateToUpload={() => setActiveTab('unggah-tugas')}
+            onNavigateToEvaluation={(id) => {
+              setSelectedSubmissionId(id);
               setActiveTab('nilai-feedback');
             }}
-            onNavigateToReceipt={(taskId) => {
+            onNavigateToReceipt={(id) => {
+              setSelectedSubmissionId(id);
               setActiveTab('riwayat-pengiriman');
             }}
-            selectedCourseFilter={selectedCourseFilter}
-            setSelectedCourseFilter={setSelectedCourseFilter}
+            submissions={data.submissions}
+            profile={data.profile}
           />
         )}
 
         {activeTab === 'unggah-tugas' && (
           <UploadView
+            studentId={data.profile.id}
             onBackToDashboard={() => setActiveTab('dashboard')}
             onSubmitSuccess={handleUploadSuccess}
             onOpenHelp={() => setHelpOpen(true)}
@@ -135,21 +231,22 @@ export function App() {
         {activeTab === 'riwayat-pengiriman' && (
           <ReceiptView
             onBackToDashboard={() => setActiveTab('dashboard')}
-            onOpenRevisionModal={() => setRevisionOpen(true)}
+            submission={latestReceipt}
           />
         )}
 
         {activeTab === 'nilai-feedback' && (
           <EvaluationView
             onBackToDashboard={() => setActiveTab('dashboard')}
-            onOpenDisputeModal={() => setDisputeOpen(true)}
             onOpenMessageModal={() => setMessageOpen(true)}
+            submission={selectedEvaluation}
+            history={gradedSubmissions}
           />
         )}
       </main>
 
       {/* Mobile Bottom Navigation Bar (for native mobile feel) */}
-      <nav 
+      <nav
         id="mobile-bottom-nav"
         className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-xl border-t border-indigo-100/70 z-40 flex items-center justify-around px-2 shadow-[0_-2px_10px_rgba(0,0,0,0.03)]"
       >
@@ -198,18 +295,8 @@ export function App() {
       <SearchModal
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
-        onSelectTask={handleSelectTaskFromSearch}
-      />
-
-      <RevisionModal
-        isOpen={revisionOpen}
-        onClose={() => setRevisionOpen(false)}
-        onSubmitRevision={handleRevisionSuccess}
-      />
-
-      <DisputeModal
-        isOpen={disputeOpen}
-        onClose={() => setDisputeOpen(false)}
+        onSelectSubmission={handleSelectSubmissionFromSearch}
+        submissions={data.submissions}
       />
 
       <MessageModal

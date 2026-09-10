@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { USER_PROFILE } from '../data/mockData';
+import { Profile } from '../types';
+import profileImg from '../img/faiz.jpeg'; // Import foto profil dari src/img
 import { 
   Search, 
   Bell, 
@@ -18,6 +19,8 @@ interface HeaderProps {
   onOpenMobileMenu: () => void;
   onNavigateToUpload: () => void;
   onNavigateToFeedback: () => void;
+  onLogout: () => void;
+  profile: Profile | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,36 +28,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenMobileMenu,
   onNavigateToUpload,
   onNavigateToFeedback,
+  onLogout,
+  profile,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const notifications = [
-    {
-      id: 'n1',
-      title: 'Tenggat Tugas 4 mendekat!',
-      desc: 'Pemrograman Web (IF3201) tersisa kurang dari 24 jam.',
-      time: '10 menit lalu',
-      type: 'warning',
-      action: onNavigateToUpload,
-    },
-    {
-      id: 'n2',
-      title: 'Nilai Tugas 3 telah dipublikasikan',
-      desc: 'Nilai 95/100 dirilis oleh Dr. Ir. Hendra Wijaya, M.T.',
-      time: '2 jam lalu',
-      type: 'success',
-      action: onNavigateToFeedback,
-    },
-    {
-      id: 'n3',
-      title: 'Turnitin Check Lolos',
-      desc: 'Indeks kesamaan dokumen sebesar 3% (Lolos Batas Aman).',
-      time: '1 hari lalu',
-      type: 'info',
-      action: onNavigateToFeedback,
-    },
-  ];
+  const notifications: { id: string; title: string; desc: string; time: string; type: string; action: () => void }[] = [];
 
   return (
     <header 
@@ -97,7 +77,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Semester Pill Badge */}
         <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#eff4ff] text-[#3525cd] text-xs font-bold border border-indigo-100/80">
           <School className="w-3.5 h-3.5" />
-          <span>{USER_PROFILE.semester}</span>
+          <span>{profile?.semester ?? 'Semester belum tersedia'}</span>
         </div>
 
         {/* Notification Bell Dropdown */}
@@ -112,7 +92,9 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="Pemberitahuan"
           >
             <Bell className="w-5 h-5" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ba1a1a] rounded-full ring-2 ring-white animate-pulse" />
+            {notifications.length > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ba1a1a] rounded-full ring-2 ring-white animate-pulse" />
+            )}
           </button>
 
           {/* Notifications Popover */}
@@ -120,11 +102,18 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="absolute right-0 mt-2 w-80 sm:w-88 bg-white rounded-2xl shadow-xl border border-indigo-100 py-3 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="px-4 pb-2 border-b border-indigo-50 flex items-center justify-between">
                 <span className="font-bold text-sm text-[#0b1c30]">Notifikasi Terbaru</span>
-                <span className="text-[11px] font-semibold text-[#3525cd] bg-indigo-50 px-2 py-0.5 rounded-full">
-                  3 Baru
-                </span>
+                {notifications.length > 0 && (
+                  <span className="text-[11px] font-semibold text-[#3525cd] bg-indigo-50 px-2 py-0.5 rounded-full">
+                    {notifications.length} Baru
+                  </span>
+                )}
               </div>
               <div className="divide-y divide-indigo-50/60 max-h-72 overflow-y-auto">
+                {notifications.length === 0 && (
+                  <div className="p-6 text-center text-xs text-[#777587]">
+                    Belum ada notifikasi baru.
+                  </div>
+                )}
                 {notifications.map((item) => (
                   <div
                     key={item.id}
@@ -175,19 +164,16 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="Menu Pengguna"
           >
             <img
-              alt="Profile Nadia Savitri"
+              alt={profile?.name ?? 'Profile'}
               className="w-8 h-8 rounded-full object-cover ring-1.5 ring-indigo-200"
-              src={USER_PROFILE.avatarUrl}
-              onError={(e) => {
-                (e.currentTarget as HTMLElement).style.display = 'none';
-              }}
+              src={profile?.avatar_url || profileImg}
             />
             <div className="hidden sm:flex flex-col text-left">
               <span className="text-xs font-bold text-[#0b1c30] leading-tight">
-                {USER_PROFILE.name}
+                {profile?.name ?? 'Pengguna'}
               </span>
               <span className="text-[11px] text-[#464555] leading-tight">
-                NIM {USER_PROFILE.nim}
+                NIM {profile?.nim ?? '-'}
               </span>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-[#777587] hidden sm:block" />
@@ -197,9 +183,9 @@ export const Header: React.FC<HeaderProps> = ({
           {showProfileMenu && (
             <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-indigo-100 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="p-3 bg-[#eff4ff] rounded-xl mb-1">
-                <p className="font-bold text-xs text-[#0b1c30]">{USER_PROFILE.name}</p>
-                <p className="text-[11px] text-[#464555] font-mono mt-0.5">NIM {USER_PROFILE.nim}</p>
-                <p className="text-[11px] text-[#3525cd] font-semibold mt-1">{USER_PROFILE.major}</p>
+                <p className="font-bold text-xs text-[#0b1c30]">{profile?.name ?? 'Pengguna'}</p>
+                <p className="text-[11px] text-[#464555] font-mono mt-0.5">NIM {profile?.nim ?? '-'}</p>
+                <p className="text-[11px] text-[#3525cd] font-semibold mt-1">{profile?.major ?? '-'}</p>
               </div>
               <div className="space-y-0.5 text-xs font-semibold text-[#464555]">
                 <button 
@@ -212,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button 
                   onClick={() => {
                     setShowProfileMenu(false);
-                    alert('Sesi demo aktif. Anda masuk sebagai Nadia Savitri.');
+                    onLogout();
                   }}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-rose-50 text-[#ba1a1a] transition-colors text-left"
                 >
