@@ -1,0 +1,317 @@
+/* --- Reset & Variabel --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --ink: #171a21;
+    --ink-soft: #4a4f58;
+    --paper: #eef1ec;
+    --paper-raised: #ffffff;
+    --teal: #2f6f6b;
+    --amber: #b9812b;
+    --line: #d7dbd1;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+}
+
+a {
+    color: inherit;
+}
+
+/* --- Header & Navigasi --- */
+header {
+    background-color: var(--ink);
+    color: var(--paper);
+    padding: 3rem 1.5rem 0;
+}
+
+.header-container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 2.25rem;
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background-color: var(--teal);
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+header h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 2.15rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+}
+
+header h2 {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #b7d3d0;
+}
+
+nav {
+    max-width: 720px;
+    margin: 0 auto;
+    border-top: 1px solid #2c313b;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+nav a {
+    color: #cfd3d9;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+nav a:hover,
+nav a:focus-visible {
+    color: var(--paper);
+    border-bottom-color: var(--amber);
+}
+
+/* --- Main Content --- */
+main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+main section {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+main section:last-of-type {
+    border-bottom: none;
+}
+
+h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+}
+
+/* --- Profil Seksi --- */
+.biodata p {
+    max-width: 62ch;
+    margin-bottom: 1rem;
+    color: var(--ink-soft);
+}
+
+.biodata p:last-child {
+    margin-bottom: 0;
+}
+
+.biodata strong {
+    color: var(--ink);
+}
+
+.biodata-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem 2rem;
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+}
+
+.biodata-grid dt {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.2rem;
+}
+
+.biodata-grid dd {
+    font-weight: 500;
+}
+
+/* --- Tabel --- */
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    padding: 0 0.75rem 0.75rem 0;
+    border-bottom: 1px solid var(--ink);
+}
+
+td {
+    padding: 0.9rem 0.75rem 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+td:first-child {
+    color: var(--teal);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background-color: var(--paper-raised);
+}
+
+.table-hint {
+    margin-top: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    font-style: italic;
+}
+
+/* --- Kontak Seksi --- */
+.kontak-intro {
+    color: var(--ink-soft);
+    margin-bottom: 1.5rem;
+    max-width: 55ch;
+}
+
+.kontak-list {
+    list-style: none;
+}
+
+.kontak-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.kontak-label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    width: 5.5rem;
+    flex-shrink: 0;
+}
+
+.kontak-list a {
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.kontak-list a:hover,
+.kontak-list a:focus-visible {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+}
+
+/* --- Aksesibilitas --- */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    * {
+        transition: none !important;
+    }
+}
+
+/* --- Responsif --- */
+@media (max-width: 600px) {
+    .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .avatar {
+        width: 110px;
+        height: 110px;
+        font-size: 2rem;
+    }
+
+    nav ul {
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .kontak-list li {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .kontak-label {
+        width: auto;
+    }
+
+    .biodata-grid {
+        grid-template-columns: 1fr;
+    }
+}
