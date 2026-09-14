@@ -1,6 +1,8 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": true,
   "rewrites": [
-    { "source": "/profile", "destination": "https://curiculumvitae-psi.vercel.app" },
+    { "source": "/profile", "destination": "https://curiculumvitae-psi.vercel.app/" },
     { "source": "/profile/:path*", "destination": "https://curiculumvitae-psi.vercel.app/:path*" }
   ]
 }
