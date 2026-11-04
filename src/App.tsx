@@ -177,7 +177,7 @@ const App: React.FC = () => {
               <div className="text-xs font-medium uppercase">Faiz Abdullah Fawaz / 1247050114</div>
               <div className="text-xs text-[#8b8272]">Mahasiswa</div>
             </div>
-            <img src={avatar} alt="Foto profil" className="w-10 h-10 rounded-full object-cover border border-[#ddd2bd]" />
+            <a href="/profile/index.html" title="Lihat profil" aria-label="Lihat profil" className="shrink-0 rounded-full"><img src={avatar} alt="Foto profil" className="w-10 h-10 rounded-full object-cover border border-[#ddd2bd] hover:ring-2 hover:ring-[#b4492a] transition" /></a>
           </div>
         </header>
 
@@ -185,7 +185,7 @@ const App: React.FC = () => {
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div>
               <h1 className="text-2xl sm:text-3xl">Tugas Kuliah</h1>
-              <p className="text-sm text-[#5a5446] mt-1">Catat, kerjakan, dan tandai tugasmu di satu tempat.</p>
+              <p className="text-sm text-[#5a5446] mt-1">Pengembangan Aplikasi Web</p>
             </div>
             <button onClick={() => openForm(null, [...openSet][0] ?? 1)} className="px-4 py-2.5 bg-[#b4492a] text-white text-sm font-bold rounded-md flex items-center gap-2">
               <Plus className="w-4 h-4" /> Tambah Tugas
