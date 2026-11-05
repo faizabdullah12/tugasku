@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>CV & Portofolio | Faiz Abdullah Fawaz</title>
+    <title>Profil | Faiz Abdullah Fawaz</title>
     <meta name="description" content="Curriculum Vitae dan Portofolio Faiz Abdullah Fawaz, mahasiswa Teknik Informatika di UIN Sunan Gunung Djati Bandung.">
+    <meta name="theme-color" content="#b4492a">
     <base href="/profile/">
 
     <meta property="og:title" content="CV & Portofolio | Faiz Abdullah Fawaz">
@@ -13,175 +14,210 @@
     <meta property="og:image" content="src/img/faiz.jpeg">
     <meta property="og:type" content="website">
 
+    <link rel="icon" href="/favicon.jpg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
-    <meta name="theme-color" content="#b4492a">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <div class="header-container">
-            <div class="header-top">
-                <div class="avatar">
-                    <img src="src/img/faiz.jpeg" alt="Foto Faiz Abdullah Fawaz">
-                </div>
-                <div>
-                    <h1>Faiz Abdullah Fawaz</h1>
-                    <h2>Mahasiswa Teknik Informatika &mdash; UIN Sunan Gunung Djati Bandung</h2>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#profil">Profil</a></li>
-                <li><a href="#akademik">Akademik</a></li>
-                <li><a href="#kontak">Kontak</a></li>
-                <li class="nav-back"><a href="/">&larr; Kembali ke Tugas</a></li>
-            </ul>
-        </nav>
-    </header>
+<div class="layout">
 
-    <main>
-        <section id="profil">
-            <h3>Profil singkat</h3>
-            <div class="profile-content">
-                <div class="biodata">
-                    <p>
-                        Halo! Saya <strong>Faiz</strong>, mahasiswa Teknik Informatika yang tertarik pada teknologi dan pengembangan perangkat lunak, khususnya pengembangan web.
-                    </p>
-                    <p>
-                        Saat ini saya sedang mempelajari pengembangan web, basis data, pemrograman mobile, dan kecerdasan buatan &mdash; baik lewat perkuliahan maupun proyek pribadi.
-                    </p>
-                    <p>
-                        Saya ingin terus mengasah kemampuan dan membangun berbagai proyek untuk memperluas pengalaman di bidang teknologi.
-                    </p>
+
+    <div class="content">
+
+        <!-- Header -->
+        <header id="app-header">
+            <div>
+                <div class="header-date" id="today"></div>
+                <div class="header-title">Profil Mahasiswa</div>
+            </div>
+            <div class="header-user">
+                <div class="header-user-text">
+                    <div class="header-user-name">Faiz Abdullah Fawaz / 1247050114</div>
+                    <div class="header-user-role">Mahasiswa</div>
                 </div>
+                <img class="header-avatar" src="src/img/faiz.jpeg" alt="Foto Faiz Abdullah Fawaz">
+            </div>
+        </header>
+
+        <main>
+
+
+            <div class="page-head">
+                <div>
+                    <h1>Profil</h1>
+                    <p>Teknik Informatika &mdash; UIN Sunan Gunung Djati Bandung</p>
+                </div>
+                <a class="btn-primary" href="/">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    Kembali ke Tugas
+                </a>
             </div>
 
-            <dl class="biodata-grid">
-                <div>
-                    <dt>Nama lengkap</dt>
-                    <dd>Faiz Abdullah Fawaz</dd>
+            <!-- Profil -->
+            <section id="profil" class="stack">
+                <div class="card profile-card">
+                    <img class="profile-photo" src="src/img/faiz.jpeg" alt="Foto Faiz Abdullah Fawaz">
+                    <div class="profile-text">
+                        <h2>Faiz Abdullah Fawaz</h2>
+                        <p class="profile-sub">Mahasiswa Teknik Informatika</p>
+                        <p>
+                            Halo! Saya <strong>Faiz</strong>, mahasiswa Teknik Informatika yang tertarik pada teknologi dan pengembangan perangkat lunak, khususnya pengembangan web.
+                        </p>
+                        <p>
+                            Saat ini saya sedang mempelajari pengembangan web, basis data, pemrograman mobile, dan kecerdasan buatan &mdash; baik lewat perkuliahan maupun proyek pribadi.
+                        </p>
+                        <p>
+                            Saya ingin terus mengasah kemampuan dan membangun berbagai proyek untuk memperluas pengalaman di bidang teknologi.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <dt>NIM</dt>
-                    <dd>1247050114</dd>
+
+                <div class="stats">
+                    <div class="card stat"><div class="stat-value">2024</div><div class="stat-label">Angkatan</div></div>
+                    <div class="card stat"><div class="stat-value">7</div><div class="stat-label">Mata kuliah</div></div>
+                    <div class="card stat"><div class="stat-value">21</div><div class="stat-label">Total SKS</div></div>
                 </div>
-                <div>
-                    <dt>Program studi</dt>
-                    <dd>Teknik Informatika</dd>
+
+                <div class="card">
+                    <h3 class="card-title">Biodata</h3>
+                    <dl class="biodata-grid">
+                        <div>
+                            <dt>Nama lengkap</dt>
+                            <dd>Faiz Abdullah Fawaz</dd>
+                        </div>
+                        <div>
+                            <dt>NIM</dt>
+                            <dd>1247050114</dd>
+                        </div>
+                        <div>
+                            <dt>Program studi</dt>
+                            <dd>Teknik Informatika</dd>
+                        </div>
+                        <div>
+                            <dt>Angkatan</dt>
+                            <dd>2024</dd>
+                        </div>
+                        <div>
+                            <dt>Tempat, tanggal lahir</dt>
+                            <dd>Majalengka, 15 Juli 2005</dd>
+                        </div>
+                        <div>
+                            <dt>Alamat</dt>
+                            <dd>Majalengka</dd>
+                        </div>
+                    </dl>
                 </div>
-                <div>
-                    <dt>Angkatan</dt>
-                    <dd>2024</dd>
+            </section>
+
+            <!-- Akademik -->
+            <section id="akademik">
+                <div class="card">
+                    <h3 class="card-title">Jadwal akademik semester ini</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hari</th>
+                                    <th>Mata kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Ruangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Senin</td>
+                                    <td>Manajemen Proyek Perangkat Lunak</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>R.4.01</td>
+                                </tr>
+                                <tr>
+                                    <td>Senin</td>
+                                    <td>Manajemen Basis Data</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>R.4.09</td>
+                                </tr>
+                                <tr>
+                                    <td>Selasa</td>
+                                    <td>Intelegensia Buatan</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>RR.4.10</td>
+                                </tr>
+                                <tr>
+                                    <td>Rabu</td>
+                                    <td>Interaksi Manusia dan Komputer</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>R.4.01</td>
+                                </tr>
+                                <tr>
+                                    <td>Rabu</td>
+                                    <td>Jaringan Komputer</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>R.4.11</td>
+                                </tr>
+                                <tr>
+                                    <td>Kamis</td>
+                                    <td>Pengembangan Aplikasi Mobile</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>R.4.01</td>
+                                </tr>
+                                <tr>
+                                    <td>Rabu</td>
+                                    <td>Pengembangan Aplikasi Web</td>
+                                    <td><span class="pill">3</span></td>
+                                    <td>R.4.01</td>
+                                </tr>
+                                <tr>
+                                    <td>-</td>
+                                    <td>Kerja Praktek/Magang</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div>
-                    <dt>Tempat, tanggal lahir</dt>
-                    <dd>Majalengka, 15 Juli 2005</dd>
+            </section>
+
+            <!-- Kontak -->
+            <section id="kontak">
+                <div class="card">
+                    <h3 class="card-title">Mari terhubung</h3>
+                    <p class="kontak-intro">Kamu dapat menghubungi saya atau melihat proyek-proyek saya melalui tautan di bawah ini:</p>
+                    <ul class="kontak-list">
+                        <li>
+                            <span class="kontak-label">Email</span>
+                            <a href="mailto:faiz.abdullah.fawaz@gmail.com">faizabdfwz@gmail.com</a>
+                        </li>
+                        <li>
+                            <span class="kontak-label">LinkedIn</span>
+                            <a href="https://linkedin.com/in/faiz-abdullah-fawaz" target="_blank" rel="noopener">https://www.linkedin.com/in/faiz-abdullah-fawaz-9aa8243a1/</a>
+                        </li>
+                        <li>
+                            <span class="kontak-label">GitHub</span>
+                            <a href="https://github.com/faiz-abdullah-fawaz" target="_blank" rel="noopener">github.com/faizabdullah12</a>
+                        </li>
+                    </ul>
                 </div>
-                <div>
-                    <dt>Alamat</dt>
-                    <dd>Majalengka</dd>
-                </div>
-            </dl>
-        </section>
+            </section>
 
-        <section id="akademik">
-            <h3>Jadwal akademik semester ini</h3>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Hari</th>
-                            <th>Mata kuliah</th>
-                            <th>SKS</th>
-                            <th>Ruangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Senin</td>
-                            <td>Manajemen Proyek Perangkat Lunak</td>
-                            <td>3</td>
-                            <td>R.4.01</td>
-                        </tr>
-                        <tr>
-                            <td>Senin</td>
-                            <td>Manajemen Basis Data</td>
-                            <td>3</td>
-                            <td>R.4.09</td>
-                        </tr>
-                        <tr>
-                            <td>Selasa</td>
-                            <td>Intelegensia Buatan</td>
-                            <td>3</td>
-                            <td>RR.4.10</td>
-                        </tr>
-                        <tr>
-                            <td>Rabu</td>
-                            <td>Interaksi Manusia dan Komputer</td>
-                            <td>3</td>
-                            <td>R.4.01</td>
-                        </tr>
-                        <tr>
-                            <td>Rabu</td>
-                            <td>Jaringan Komputer</td>
-                            <td>3</td>
-                            <td>R.4.11</td>
-                        </tr>
-                        <tr>
-                            <td>Kamis</td>
-                            <td>Pengembangan Aplikasi Mobile</td>
-                            <td>3</td>
-                            <td>R.4.01</td>
-                        </tr>
-                        <tr>
-                            <td>Rabu</td>
-                            <td>Pengembangan Aplikasi Web</td>
-                            <td>3</td>
-                            <td>R.4.01</td>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>Kerja Praktek/Magang</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
+        </main>
 
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        <footer>
+            <p>&copy; 2026 Faiz Abdullah Fawaz</p>
+        </footer>
+    </div>
+</div>
 
-
-        <section id="kontak">
-            <h3>Mari terhubung</h3>
-            <p class="kontak-intro">Kamu dapat menghubungi saya atau melihat proyek-proyek saya melalui tautan di bawah ini:</p>
-            <ul class="kontak-list">
-                <li>
-                    <span class="kontak-label">Email</span>
-                    <a href="mailto:faiz.abdullah.fawaz@gmail.com">faizabdfwz@gmail.com</a>
-                </li>
-                <li>
-                    <span class="kontak-label">LinkedIn</span>
-                    <a href="https://linkedin.com/in/faiz-abdullah-fawaz" target="_blank" rel="noopener">https://www.linkedin.com/in/faiz-abdullah-fawaz-9aa8243a1/</a>
-                </li>
-                <li>
-                    <span class="kontak-label">GitHub</span>
-                    <a href="https://github.com/faiz-abdullah-fawaz" target="_blank" rel="noopener">github.com/faizabdullah12</a>
-                </li>
-            </ul>
-        </section>
-    </main>
-
-
-    <footer>
-        <p>&copy; 2026 Faiz Abdullah Fawaz</p>
-    </footer>
+<script>
+    // Tanggal di header (sama seperti di halaman tugas)
+    document.getElementById('today').textContent =
+        new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
+</script>
 
 </body>
 </html>
