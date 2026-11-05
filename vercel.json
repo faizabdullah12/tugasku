@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/daftar-kegiatan", "destination": "https://daftar-kegiatan.vercel.app/" },
+    { "source": "/daftar-kegiatan/:path*", "destination": "https://daftar-kegiatan.vercel.app/:path*" },
     { "source": "/profile", "destination": "/profile/index.html" },
     { "source": "/profile/(.*)", "destination": "/profile/$1" }
   ]
