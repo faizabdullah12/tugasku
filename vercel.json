@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/nonton-bos/", "destination": "https://nonton-bos-sigma.vercel.app/" },
     { "source": "/nonton-bos", "destination": "https://nonton-bos-sigma.vercel.app/" },
     { "source": "/nonton-bos/:path*", "destination": "https://nonton-bos-sigma.vercel.app/:path*" },
     { "source": "/daftar-kegiatan", "destination": "https://daftar-kegiatan.vercel.app/" },
